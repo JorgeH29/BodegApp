@@ -6,9 +6,10 @@ data class Producto(
     val categoria: String,
     val precio: Double,
     val stock: Int,
-    val stockMin: Int
+    val stockMin: Int,
+    val fotografia: String? = null
 ) {
-    val stockBajo: Boolean get() = stock <= stockMin
+    val stockBajo: Boolean get() = stock in 1..stockMin
     val sinStock: Boolean get() = stock == 0
 }
 

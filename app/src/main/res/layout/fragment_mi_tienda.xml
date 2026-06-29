@@ -49,18 +49,12 @@
                 android:text="Bodega Don Carlos" />
 
             <!-- Mapa simulado -->
-            <LinearLayout
+            <fragment
+                android:id="@+id/mapView"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:layout_marginTop="16dp"
-                android:gravity="center"
-                android:background="@color/green_bg">
-
-                <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:src="@drawable/ic_location" />
-            </LinearLayout>
+                android:layout_height="200dp"
+                android:layout_marginTop="16dp" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -107,6 +101,23 @@
                 android:orientation="vertical"
                 android:layout_marginTop="8dp" />
 
+            <TextView
+                android:id="@+id/tvTituloFavoritos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:text="⭐ Mis favoritos"
+                android:textColor="@color/text_dark"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:visibility="gone" />
+
+            <LinearLayout
+                android:id="@+id/contenedorFavoritos"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_marginTop="8dp" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>

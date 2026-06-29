@@ -1,13 +1,16 @@
 package com.bodegapp.app.ui.inventario
 
+import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.bodegapp.app.R
 import com.bodegapp.app.data.Producto
-import androidx.core.content.ContextCompat
+import java.io.File
 
 class InventarioAdapter(
     private var productos: List<Producto>,
@@ -15,6 +18,7 @@ class InventarioAdapter(
 ) : RecyclerView.Adapter<InventarioAdapter.VH>() {
 
     inner class VH(view: View) : RecyclerView.ViewHolder(view) {
+        val foto: ImageView = view.findViewById(R.id.ivFotoProductoInv)
         val nombre: TextView = view.findViewById(R.id.tvNombreProductoInv)
         val categoria: TextView = view.findViewById(R.id.tvCategoriaProductoInv)
         val stock: TextView = view.findViewById(R.id.tvStockProductoInv)
@@ -36,6 +40,18 @@ class InventarioAdapter(
         holder.nombre.text = p.nombre
         holder.categoria.text = "${p.categoria} · S/ ${"%.2f".format(p.precio)}"
         holder.precio.text = "S/ %.2f".format(p.precio)
+
+        // Cargar foto si existe
+        if (!p.fotografia.isNullOrEmpty()) {
+            val archivo = File(p.fotografia)
+            if (archivo.exists()) {
+                holder.foto.setImageURI(Uri.fromFile(archivo))
+            } else {
+                holder.foto.setImageResource(R.drawable.ic_box)
+            }
+        } else {
+            holder.foto.setImageResource(R.drawable.ic_box)
+        }
 
         val ctx = holder.itemView.context
         when {

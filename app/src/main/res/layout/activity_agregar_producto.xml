@@ -42,27 +42,26 @@
             android:orientation="vertical"
             android:padding="20dp">
 
-            <!-- Foto placeholder -->
-            <LinearLayout
+            <!-- Foto del producto -->
+            <ImageView
+                android:id="@+id/ivFotoProducto"
                 android:layout_width="match_parent"
-                android:layout_height="120dp"
-                android:orientation="vertical"
+                android:layout_height="150dp"
+                android:scaleType="centerCrop"
+                android:background="@drawable/bg_input"
+                android:src="@drawable/ic_box" />
+
+            <TextView
+                android:id="@+id/btnTomarFoto"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 android:gravity="center"
-                android:background="@drawable/bg_input">
-
-                <ImageView
-                    android:layout_width="32dp"
-                    android:layout_height="32dp"
-                    android:src="@drawable/ic_box" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
-                    android:text="Foto del producto (opcional)"
-                    android:textColor="@color/text_gray"
-                    android:textSize="12sp" />
-            </LinearLayout>
+                android:padding="10dp"
+                android:background="@drawable/bg_input"
+                android:text="📷 Tomar foto"
+                android:textColor="@color/orange_primary"
+                android:textStyle="bold" />
 
             <TextView
                 android:layout_width="match_parent"

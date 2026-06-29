@@ -13,7 +13,7 @@ class DbHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_V
 
     companion object {
         const val DB_NAME = "bodegapp.db"
-        const val DB_VERSION = 2
+        const val DB_VERSION = 3
 
         // Tabla productos
         const val TABLE_PRODUCTOS = "productos"
@@ -46,20 +46,23 @@ class DbHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_V
         const val COL_VENTA_TOTAL = "total"
         const val COL_VENTA_FECHA = "fecha" // yyyy-MM-dd
         const val COL_VENTA_HORA = "hora"   // HH:mm
+        // En companion object agrega:
+        const val COL_PROD_FOTO = "fotografia"
     }
 
     override fun onCreate(db: SQLiteDatabase) {
         db.execSQL(
             """
-            CREATE TABLE $TABLE_PRODUCTOS (
-                $COL_PROD_ID INTEGER PRIMARY KEY AUTOINCREMENT,
-                $COL_PROD_NOMBRE TEXT NOT NULL,
-                $COL_PROD_CATEGORIA TEXT,
-                $COL_PROD_PRECIO REAL NOT NULL DEFAULT 0,
-                $COL_PROD_STOCK INTEGER NOT NULL DEFAULT 0,
-                $COL_PROD_STOCK_MIN INTEGER NOT NULL DEFAULT 0
-            )
-            """.trimIndent()
+    CREATE TABLE $TABLE_PRODUCTOS (
+        $COL_PROD_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+        $COL_PROD_NOMBRE TEXT NOT NULL,
+        $COL_PROD_CATEGORIA TEXT,
+        $COL_PROD_PRECIO REAL NOT NULL DEFAULT 0,
+        $COL_PROD_STOCK INTEGER NOT NULL DEFAULT 0,
+        $COL_PROD_STOCK_MIN INTEGER NOT NULL DEFAULT 0,
+        $COL_PROD_FOTO TEXT
+    )
+    """.trimIndent()
         )
 
         db.execSQL(
@@ -121,20 +124,10 @@ class DbHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_V
             }
             db.insert(TABLE_PRODUCTOS, null, cv)
         }
-        prod("Inca Kola 1.5L", "Bebidas", 6.50, 2, 5)
-        prod("Pan de molde", "Panadería", 4.20, 18, 5)
-        prod("Jugo Frugos", "Bebidas", 2.50, 35, 10)
-        prod("Shampoo Sedal", "Cuidado personal", 12.90, 0, 5)
-        prod("Sublime", "Dulces", 1.50, 60, 10)
-
         fun cliente(nombre: String): Long {
             val cv = ContentValues().apply { put(COL_CLI_NOMBRE, nombre) }
             return db.insert(TABLE_CLIENTES, null, cv)
         }
-        val pedro = cliente("Pedro Huanca")
-        val maria = cliente("María Ríos")
-        val juan = cliente("Juan López")
-        val ana = cliente("Ana Castillo")
 
         fun fiado(clienteId: Long, monto: Double, fecha: String, pagado: Int) {
             val cv = ContentValues().apply {
@@ -145,9 +138,6 @@ class DbHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_V
             }
             db.insert(TABLE_FIADOS, null, cv)
         }
-        fiado(pedro, 45.00, "2026-06-05", 0)
-        fiado(maria, 28.50, "2026-06-18", 0)
-        fiado(juan, 12.00, "2026-06-10", 0)
-        fiado(ana, 67.00, "2026-06-12", 1)
+
     }
 }

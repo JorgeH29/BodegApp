@@ -35,7 +35,7 @@ class BodegaRepository(context: Context) {
 
     fun contarStockBajo(): Int = obtenerProductos().count { it.stockBajo }
 
-    fun insertarProducto(nombre: String, categoria: String, precio: Double, stock: Int, stockMin: Int): Long {
+    fun insertarProducto(nombre: String, categoria: String, precio: Double, stock: Int, stockMin: Int, foto: String? = null): Long {
         val db = dbHelper.writableDatabase
         val cv = ContentValues().apply {
             put(DbHelper.COL_PROD_NOMBRE, nombre)
@@ -43,6 +43,7 @@ class BodegaRepository(context: Context) {
             put(DbHelper.COL_PROD_PRECIO, precio)
             put(DbHelper.COL_PROD_STOCK, stock)
             put(DbHelper.COL_PROD_STOCK_MIN, stockMin)
+            put(DbHelper.COL_PROD_FOTO, foto)
         }
         return db.insert(DbHelper.TABLE_PRODUCTOS, null, cv)
     }
@@ -92,7 +93,8 @@ class BodegaRepository(context: Context) {
             categoria = c.getString(c.getColumnIndexOrThrow(DbHelper.COL_PROD_CATEGORIA)) ?: "",
             precio = c.getDouble(c.getColumnIndexOrThrow(DbHelper.COL_PROD_PRECIO)),
             stock = c.getInt(c.getColumnIndexOrThrow(DbHelper.COL_PROD_STOCK)),
-            stockMin = c.getInt(c.getColumnIndexOrThrow(DbHelper.COL_PROD_STOCK_MIN))
+            stockMin = c.getInt(c.getColumnIndexOrThrow(DbHelper.COL_PROD_STOCK_MIN)),
+            fotografia = c.getString(c.getColumnIndexOrThrow(DbHelper.COL_PROD_FOTO))  // AGREGA
         )
     }
 
