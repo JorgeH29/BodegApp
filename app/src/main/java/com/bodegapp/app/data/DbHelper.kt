@@ -13,7 +13,15 @@ class DbHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_V
 
     companion object {
         const val DB_NAME = "bodegapp.db"
-        const val DB_VERSION = 3
+        const val DB_VERSION = 4
+
+
+        //tabla usuario - No habia
+        const val TABBLE_USUARIO = "usuario"
+        const val COL_USUARIO_ID = "UsuarioID"
+        const val COL_USUARIO_NOMBRES = "Nombre"
+        const val COL_USUARIO_APELLIDOS = "Apellidos"
+
 
         // Tabla productos
         const val TABLE_PRODUCTOS = "productos"
@@ -46,11 +54,30 @@ class DbHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_V
         const val COL_VENTA_TOTAL = "total"
         const val COL_VENTA_FECHA = "fecha" // yyyy-MM-dd
         const val COL_VENTA_HORA = "hora"   // HH:mm
+
         // En companion object agrega:
         const val COL_PROD_FOTO = "fotografia"
     }
 
+
+    //USUARIO, no habia una tabla usuario
     override fun onCreate(db: SQLiteDatabase) {
+
+        db.execSQL(
+            """
+    CREATE TABLE $TABBLE_USUARIO (
+        $COL_USUARIO_ID INTEGER PRIMARY KEY AUTOINCREMENT,
+        $COL_USUARIO_NOMBRES TEXT,
+        $COL_USUARIO_APELLIDOS TEXT 
+
+    )
+    """.trimIndent()
+        )
+
+
+
+
+
         db.execSQL(
             """
     CREATE TABLE $TABLE_PRODUCTOS (
@@ -106,6 +133,7 @@ class DbHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_V
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
+        db.execSQL("DROP TABLE IF EXISTS $TABBLE_USUARIO")
         db.execSQL("DROP TABLE IF EXISTS $TABLE_PRODUCTOS")
         db.execSQL("DROP TABLE IF EXISTS $TABLE_CLIENTES")
         db.execSQL("DROP TABLE IF EXISTS $TABLE_FIADOS")
@@ -124,6 +152,7 @@ class DbHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_V
             }
             db.insert(TABLE_PRODUCTOS, null, cv)
         }
+
         fun cliente(nombre: String): Long {
             val cv = ContentValues().apply { put(COL_CLI_NOMBRE, nombre) }
             return db.insert(TABLE_CLIENTES, null, cv)

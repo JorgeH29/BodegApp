@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.bodegapp.app.R
 import com.bodegapp.app.data.BodegaRepository
@@ -15,6 +16,8 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 class DashboardFragment : Fragment() {
 
     private lateinit var repo: BodegaRepository
+    private lateinit var txtSaludo: TextView
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -25,6 +28,7 @@ class DashboardFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         repo = BodegaRepository(requireContext())
+        txtSaludo = view.findViewById(R.id.txtSaludo)
 
         view.findViewById<View>(R.id.btnNuevaVenta).setOnClickListener {
             startActivity(Intent(requireContext(), NuevaVentaActivity::class.java))
@@ -57,6 +61,17 @@ class DashboardFragment : Fragment() {
         val totalProductos = repo.contarProductos()
         val totalFiado = repo.totalFiadoPendiente()
         val stockBajo = repo.contarStockBajo()
+
+
+        //mostrar nombre
+        val cursor = repo.mostrarNombre()
+        if (cursor.moveToFirst()) {
+            val nombre = cursor.getString(0)
+            txtSaludo.text = "Hola $nombre"
+        }
+        cursor.close()
+
+
 
         v.findViewById<android.widget.TextView>(R.id.tvVentasHoy).text =
             "S/ %.2f".format(totalHoy)

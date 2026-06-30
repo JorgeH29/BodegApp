@@ -2,6 +2,7 @@ package com.bodegapp.app.data
 
 import android.content.ContentValues
 import android.content.Context
+import android.database.Cursor
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -13,6 +14,49 @@ import java.util.Locale
 class BodegaRepository(context: Context) {
 
     private val dbHelper = DbHelper(context)
+    //---------------- USUARIOS ---------------- // NUEVO! jeje
+
+    fun insertar_usuario(
+        nombre: String,
+        apellidos: String,
+//        nombre_tienda: String,
+//        direccion_tienda: String
+    ) {
+
+        val db = dbHelper.writableDatabase
+
+        // insertar usuario
+        val valoresUsuario = ContentValues().apply {
+            put(DbHelper.COL_USUARIO_NOMBRES, nombre)
+            put(DbHelper.COL_USUARIO_APELLIDOS, apellidos)
+        }
+
+        db.insert(DbHelper.TABBLE_USUARIO, null, valoresUsuario)
+
+    }
+
+    fun mostrarNombre(): Cursor {
+        return dbHelper.readableDatabase.rawQuery(
+            "SELECT ${DbHelper.COL_USUARIO_NOMBRES} FROM ${DbHelper.TABBLE_USUARIO}",
+            null
+        )
+    }
+
+    fun ExisteUsuario(): Boolean {
+        val db = dbHelper.readableDatabase
+        val tablaUsuario = DbHelper.TABBLE_USUARIO
+
+        val consulta = db.rawQuery("SELECT EXISTS(SELECT 1 FROM $tablaUsuario LIMIT 1 )", null)
+        var existe = false
+
+        if (consulta.moveToFirst()) {
+            existe = consulta.getInt(0) > 0
+        }
+        consulta.close()
+
+        return existe
+    }
+
 
     // ---------------- PRODUCTOS ----------------
 
@@ -35,7 +79,14 @@ class BodegaRepository(context: Context) {
 
     fun contarStockBajo(): Int = obtenerProductos().count { it.stockBajo }
 
-    fun insertarProducto(nombre: String, categoria: String, precio: Double, stock: Int, stockMin: Int, foto: String? = null): Long {
+    fun insertarProducto(
+        nombre: String,
+        categoria: String,
+        precio: Double,
+        stock: Int,
+        stockMin: Int,
+        foto: String? = null
+    ): Long {
         val db = dbHelper.writableDatabase
         val cv = ContentValues().apply {
             put(DbHelper.COL_PROD_NOMBRE, nombre)
@@ -51,7 +102,12 @@ class BodegaRepository(context: Context) {
     fun actualizarStock(productoId: Long, nuevoStock: Int) {
         val db = dbHelper.writableDatabase
         val cv = ContentValues().apply { put(DbHelper.COL_PROD_STOCK, nuevoStock) }
-        db.update(DbHelper.TABLE_PRODUCTOS, cv, "${DbHelper.COL_PROD_ID}=?", arrayOf(productoId.toString()))
+        db.update(
+            DbHelper.TABLE_PRODUCTOS,
+            cv,
+            "${DbHelper.COL_PROD_ID}=?",
+            arrayOf(productoId.toString())
+        )
     }
 
     fun obtenerProductoPorId(productoId: Long): Producto? {
@@ -68,7 +124,12 @@ class BodegaRepository(context: Context) {
     }
 
     fun actualizarProducto(
-        productoId: Long, nombre: String, categoria: String, precio: Double, stock: Int, stockMin: Int
+        productoId: Long,
+        nombre: String,
+        categoria: String,
+        precio: Double,
+        stock: Int,
+        stockMin: Int
     ) {
         val db = dbHelper.writableDatabase
         val cv = ContentValues().apply {
@@ -78,12 +139,21 @@ class BodegaRepository(context: Context) {
             put(DbHelper.COL_PROD_STOCK, stock)
             put(DbHelper.COL_PROD_STOCK_MIN, stockMin)
         }
-        db.update(DbHelper.TABLE_PRODUCTOS, cv, "${DbHelper.COL_PROD_ID}=?", arrayOf(productoId.toString()))
+        db.update(
+            DbHelper.TABLE_PRODUCTOS,
+            cv,
+            "${DbHelper.COL_PROD_ID}=?",
+            arrayOf(productoId.toString())
+        )
     }
 
     fun eliminarProducto(productoId: Long) {
         val db = dbHelper.writableDatabase
-        db.delete(DbHelper.TABLE_PRODUCTOS, "${DbHelper.COL_PROD_ID}=?", arrayOf(productoId.toString()))
+        db.delete(
+            DbHelper.TABLE_PRODUCTOS,
+            "${DbHelper.COL_PROD_ID}=?",
+            arrayOf(productoId.toString())
+        )
     }
 
     private fun cursorToProducto(c: android.database.Cursor): Producto {
@@ -131,7 +201,12 @@ class BodegaRepository(context: Context) {
     fun marcarFiadoPagado(fiadoId: Long) {
         val db = dbHelper.writableDatabase
         val cv = ContentValues().apply { put(DbHelper.COL_FIADO_PAGADO, 1) }
-        db.update(DbHelper.TABLE_FIADOS, cv, "${DbHelper.COL_FIADO_ID}=?", arrayOf(fiadoId.toString()))
+        db.update(
+            DbHelper.TABLE_FIADOS,
+            cv,
+            "${DbHelper.COL_FIADO_ID}=?",
+            arrayOf(fiadoId.toString())
+        )
     }
 
     fun obtenerFiados(soloPendientes: Boolean = false): List<Fiado> {
@@ -215,10 +290,12 @@ class BodegaRepository(context: Context) {
                     Venta(
                         id = it.getLong(it.getColumnIndexOrThrow(DbHelper.COL_VENTA_ID)),
                         productoId = it.getLong(it.getColumnIndexOrThrow(DbHelper.COL_VENTA_PRODUCTO_ID)),
-                        productoNombre = it.getString(it.getColumnIndexOrThrow(DbHelper.COL_VENTA_PRODUCTO_NOMBRE)) ?: "",
+                        productoNombre = it.getString(it.getColumnIndexOrThrow(DbHelper.COL_VENTA_PRODUCTO_NOMBRE))
+                            ?: "",
                         cantidad = it.getInt(it.getColumnIndexOrThrow(DbHelper.COL_VENTA_CANTIDAD)),
                         total = it.getDouble(it.getColumnIndexOrThrow(DbHelper.COL_VENTA_TOTAL)),
-                        fecha = it.getString(it.getColumnIndexOrThrow(DbHelper.COL_VENTA_FECHA)) ?: "",
+                        fecha = it.getString(it.getColumnIndexOrThrow(DbHelper.COL_VENTA_FECHA))
+                            ?: "",
                         hora = it.getString(it.getColumnIndexOrThrow(DbHelper.COL_VENTA_HORA)) ?: ""
                     )
                 )
