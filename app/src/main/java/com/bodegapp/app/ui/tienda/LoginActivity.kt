@@ -67,8 +67,6 @@ class LoginActivity : AppCompatActivity() {
                 mostrarFragmento(DashboardFragment())
 
             }
-
-
         }
 
     }
