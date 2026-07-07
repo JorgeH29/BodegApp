@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="orange_primary">#FF6A1B</color>
+    <color name="orange_dark">#E65100</color>
+    <color name="orange_light">#FFE0CC</color>
+    <color name="green_ok">#2E7D32</color>
+    <color name="green_bg">#E8F5E9</color>
+    <color name="red_alert">#D32F2F</color>
+    <color name="red_bg">#FDEBEC</color>
+    <color name="bg_cream">#FFF7F1</color>
+    <color name="card_white">#FFFFFF</color>
+    <color name="text_dark">#2B2118</color>
+    <color name="text_gray">#8A8079</color>
+    <color name="black">#000000</color>
+    <color name="white">#FFFFFF</color>
+</resources>
