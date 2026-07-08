@@ -11,7 +11,8 @@ import com.bodegapp.app.data.Fiado
 
 class FiadosAdapter(
     private var fiados: List<Fiado>,
-    private val onMarcarPagado: (Fiado) -> Unit
+    private val onMarcarPagado: (Fiado) -> Unit,
+    private val onEditarOEliminar: (Fiado) -> Unit
 ) : RecyclerView.Adapter<FiadosAdapter.VH>() {
 
     inner class VH(view: View) : RecyclerView.ViewHolder(view) {
@@ -48,6 +49,12 @@ class FiadosAdapter(
             holder.estado.setBackgroundResource(R.drawable.bg_pill_red)
             holder.estado.setTextColor(ContextCompat.getColor(ctx, R.color.red_alert))
             holder.estado.setOnClickListener { onMarcarPagado(f) }
+        }
+
+        // Mantener presionado sobre la tarjeta abre el diálogo de editar/eliminar
+        holder.itemView.setOnLongClickListener {
+            onEditarOEliminar(f)
+            true
         }
     }
 

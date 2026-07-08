@@ -209,6 +209,65 @@ class BodegaRepository(context: Context) {
         )
     }
 
+    /**
+     * Obtiene un fiado puntual por su id (útil para precargar el diálogo de edición
+     * con el nombre del cliente y el monto actuales).
+     */
+    fun obtenerFiadoPorId(fiadoId: Long): Fiado? {
+        val db = dbHelper.readableDatabase
+        val sql = """
+            SELECT f.${DbHelper.COL_FIADO_ID}, f.${DbHelper.COL_FIADO_CLIENTE_ID},
+                   c.${DbHelper.COL_CLI_NOMBRE}, f.${DbHelper.COL_FIADO_MONTO},
+                   f.${DbHelper.COL_FIADO_FECHA}, f.${DbHelper.COL_FIADO_PAGADO}
+            FROM ${DbHelper.TABLE_FIADOS} f
+            JOIN ${DbHelper.TABLE_CLIENTES} c ON c.${DbHelper.COL_CLI_ID} = f.${DbHelper.COL_FIADO_CLIENTE_ID}
+            WHERE f.${DbHelper.COL_FIADO_ID} = ?
+        """.trimIndent()
+        val cursor = db.rawQuery(sql, arrayOf(fiadoId.toString()))
+        cursor.use {
+            if (it.moveToFirst()) {
+                return Fiado(
+                    id = it.getLong(0),
+                    clienteId = it.getLong(1),
+                    clienteNombre = it.getString(2),
+                    monto = it.getDouble(3),
+                    fecha = it.getString(4) ?: "",
+                    pagado = it.getInt(5) == 1
+                )
+            }
+        }
+        return null
+    }
+
+    /**
+     * Actualiza el monto y/o el nombre del cliente de un fiado ya existente.
+     * Si el nombre de cliente cambia, se reutiliza el cliente si ya existe o se crea uno nuevo.
+     */
+    fun actualizarFiado(fiadoId: Long, clienteNombre: String, monto: Double) {
+        val clienteId = obtenerOcrearCliente(clienteNombre)
+        val db = dbHelper.writableDatabase
+        val cv = ContentValues().apply {
+            put(DbHelper.COL_FIADO_CLIENTE_ID, clienteId)
+            put(DbHelper.COL_FIADO_MONTO, monto)
+        }
+        db.update(
+            DbHelper.TABLE_FIADOS,
+            cv,
+            "${DbHelper.COL_FIADO_ID}=?",
+            arrayOf(fiadoId.toString())
+        )
+    }
+
+    /** Elimina un fiado (por ejemplo, cuando se registró por error). */
+    fun eliminarFiado(fiadoId: Long) {
+        val db = dbHelper.writableDatabase
+        db.delete(
+            DbHelper.TABLE_FIADOS,
+            "${DbHelper.COL_FIADO_ID}=?",
+            arrayOf(fiadoId.toString())
+        )
+    }
+
     fun obtenerFiados(soloPendientes: Boolean = false): List<Fiado> {
         val db = dbHelper.readableDatabase
         val lista = mutableListOf<Fiado>()
